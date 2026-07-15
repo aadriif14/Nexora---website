@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora — Trabaja menos, consigue más.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0A66FF;
+    --blue-light:#5B90FF;
+    --blue-dim:rgba(10,102,255,0.14);
+    --bg:#0B0F19;
+    --surface:#10141F;
+    --surface-2:#151A27;
+    --border:rgba(255,255,255,0.08);
+    --border-strong:rgba(255,255,255,0.14);
+    --white:#FFFFFF;
+    --gray:#8B95A7;
+    --gray-dim:#5C6478;
+    --font-display:'Inter',-apple-system,sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --container:1180px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:var(--font-display);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    line-height:1.5;
+  }
+  ::selection{background:var(--blue);color:var(--white);}
+
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  ul{list-style:none;}
+
+  .wrap{max-width:var(--container);margin:0 auto;padding:0 32px;}
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--surface-2);border-radius:10px;}
+
+  /* ---------- utility ---------- */
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--blue-light);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;
+    border-radius:2px;
+    background:var(--blue);
+    box-shadow:0 0 12px var(--blue);
+    flex-shrink:0;
+  }
+  .section-head{max-width:640px;margin-bottom:64px;}
+  .section-head h2{
+    font-size:clamp(30px,4vw,44px);
+    font-weight:700;
+    letter-spacing:-0.02em;
+    line-height:1.15;
+  }
+  .section-head p{
+    margin-top:18px;
+    color:var(--gray);
+    font-size:17px;
+    line-height:1.6;
+    max-width:560px;
+  }
+  .center{text-align:center;margin-left:auto;margin-right:auto;}
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-size:14.5px;
+    font-weight:600;
+    padding:13px 24px;
+    border-radius:10px;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .3s ease, border-color .3s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:var(--blue);
+    color:var(--white);
+    box-shadow:0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 20px -8px rgba(10,102,255,0.7);
+    position:relative;
+    overflow:hidden;
+  }
+  .btn-primary::after{
+    content:"";
+    position:absolute;
+    top:0;left:-60%;
+    width:40%;height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.35),transparent);
+    transform:skewX(-20deg);
+    transition:left .6s ease;
+  }
+  .btn-primary:hover::after{left:130%;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,0.2) inset,0 14px 28px -10px rgba(10,102,255,0.85);}
+  .btn-primary:active{transform:translateY(0px) scale(0.98);}
+
+  .btn-ghost{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border-strong);
+    color:var(--white);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.25);transform:translateY(-2px);}
+
+  .btn-sm{padding:10px 18px;font-size:13.5px;}
+
+  [data-reveal]{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .8s var(--ease), transform .8s var(--ease);
+  }
+  [data-reveal].in{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- logo ---------- */
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:-0.01em;}
+  .logo-mark{width:26px;height:26px;flex-shrink:0;}
+
+  /* ---------- header ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:20px 0;
+    transition:padding .4s var(--ease), background .4s var(--ease), border-color .4s var(--ease);
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    padding:13px 0;
+    background:rgba(11,15,25,0.72);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--border);
+  }
+  header .wrap{display:flex;align-items:center;justify-content:space-between;}
+  nav.main-nav{display:flex;align-items:center;gap:38px;}
+  nav.main-nav a{
+    font-size:14px;font-weight:500;color:var(--gray);
+    transition:color .25s ease;position:relative;
+  }
+  nav.main-nav a::after{
+    content:"";position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--blue-light);
+    transition:width .3s var(--ease);
+  }
+  nav.main-nav a:hover{color:var(--white);}
+  nav.main-nav a:hover::after{width:100%;}
+  .header-actions{display:flex;align-items:center;gap:14px;}
+  .menu-toggle{display:none;flex-direction:column;gap:5px;padding:6px;}
+  .menu-toggle span{width:22px;height:2px;background:var(--white);border-radius:2px;transition:transform .3s ease, opacity .3s ease;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:150px 0 100px;
+    overflow:hidden;
+  }
+  .hero-glow{
+    position:absolute;
+    top:-10%;left:50%;
+    width:1100px;height:1100px;
+    transform:translateX(-50%);
+    background:radial-gradient(circle,rgba(10,102,255,0.20) 0%,rgba(10,102,255,0.05) 40%,transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+  #graph-canvas{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    opacity:0.9;
+  }
+  .hero-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;text-align:center;}
+  .hero h1{
+    font-size:clamp(42px,7vw,84px);
+    font-weight:800;
+    letter-spacing:-0.035em;
+    line-height:1.03;
+    background:linear-gradient(180deg,#fff 30%,#c7d3ee 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero p.lead{
+    margin:26px auto 0;
+    max-width:520px;
+    font-size:18px;
+    color:var(--gray);
+    line-height:1.65;
+  }
+  .hero-ctas{display:flex;gap:14px;justify-content:center;margin-top:40px;flex-wrap:wrap;}
+  .hero-ctas .btn{padding:15px 28px;font-size:15px;}
+  .hero-tags{
+    margin-top:54px;
+    display:flex;
+    justify-content:center;
+    gap:28px;
+    flex-wrap:wrap;
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gray-dim);
+  }
+  .hero-tags span{display:flex;align-items:center;gap:8px;}
+  .hero-tags span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--blue);opacity:0.7;}
+
+  .scroll-cue{
+    position:absolute;bottom:38px;left:50%;transform:translateX(-50%);
+    z-index:2;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    color:var(--gray-dim);
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .scroll-cue .line{width:1px;height:28px;background:linear-gradient(var(--gray-dim),transparent);animation:scrolldrop 2s ease-in-out infinite;}
+  @keyframes scrolldrop{0%{opacity:0;transform:scaleY(0.3);transform-origin:top;}50%{opacity:1;}100%{opacity:0;transform:scaleY(1);transform-origin:top;}}
+
+  /* ---------- generic section spacing ---------- */
+  .section{padding:130px 0;position:relative;}
+  .section-border-top{border-top:1px solid var(--border);}
+
+  /* ---------- beneficios ---------- */
+  .benefits-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+  }
+  .benefit-card{
+    background:var(--surface);
+    padding:36px 30px;
+    transition:background .35s ease;
+    position:relative;
+  }
+  .benefit-card:hover{background:var(--surface-2);}
+  .benefit-icon{
+    width:38px;height:38px;
+    border-radius:10px;
+    background:var(--blue-dim);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:22px;
+  }
+  .benefit-icon svg{width:18px;height:18px;stroke:var(--blue-light);}
+  .benefit-card h3{font-size:16.5px;font-weight:600;margin-bottom:10px;letter-spacing:-0.01em;}
+  .benefit-card p{font-size:14.5px;color:var(--gray);line-height:1.6;}
+
+  /* ---------- qué es nexora (marca) ---------- */
+  .brand-section .wrap{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:80px;
+    align-items:center;
+  }
+  .brand-copy h2{font-size:clamp(28px,3.6vw,40px);font-weight:700;letter-spacing:-0.02em;line-height:1.2;}
+  .brand-copy p{margin-top:22px;color:var(--gray);font-size:16.5px;line-height:1.75;max-width:480px;}
+  .brand-stack{
+    display:flex;flex-direction:column;gap:14px;
+    margin-top:34px;
+  }
+  .brand-stack-item{
+    display:flex;align-items:center;gap:14px;
+    padding:16px 18px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--gray);
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .brand-stack-item:hover{border-color:var(--border-strong);transform:translateX(4px);}
+  .brand-stack-item .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;box-shadow:0 0 10px var(--blue);}
+  .brand-stack-item.future{opacity:0.55;}
+  .brand-stack-item.future .dot{background:var(--gray-dim);box-shadow:none;}
+
+  .brand-visual{
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:24px;
+    background:radial-gradient(circle at 30% 20%, rgba(10,102,255,0.18), transparent 60%), var(--surface);
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .brand-visual .big-n{width:46%;opacity:0.9;}
+
+  /* ---------- nexora core (producto) ---------- */
+  .product-section{
+    background:linear-gradient(180deg, transparent 0%, rgba(10,102,255,0.035) 40%, transparent 100%);
+  }
+  .product-grid{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:70px;
+    align-items:center;
+  }
+  .product-copy .eyebrow{color:var(--blue-light);}
+  .product-copy h2{font-size:clamp(28px,3.6vw,40px);font-weight:700;letter-spacing:-0.02em;line-height:1.18;}
+  .product-copy p.lead{margin-top:20px;color:var(--gray);font-size:16.5px;line-height:1.75;max-width:460px;}
+  .feature-list{margin-top:32px;display:flex;flex-direction:column;gap:20px;}
+  .feature-item{display:flex;gap:16px;align-items:flex-start;}
+  .feature-item .num{
+    font-family:var(--font-mono);font-size:12px;color:var(--blue-light);
+    padding-top:3px;flex-shrink:0;width:24px;
+  }
+  .feature-item h4{font-size:15.5px;font-weight:600;margin-bottom:4px;}
+  .feature-item p{font-size:14px;color:var(--gray);line-height:1.6;}
+  .product-copy .btn{margin-top:38px;}
+
+  /* mock dashboard card */
+  .mock-card{
+    background:var(--surface);
+    border:1px solid var(--border-strong);
+    border-radius:18px;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02);
+    overflow:hidden;
+    transform:perspective(1400px) rotateY(-6deg) rotateX(2deg);
+    transition:transform .6s var(--ease);
+  }
+  .mock-card:hover{transform:perspective(1400px) rotateY(-2deg) rotateX(0.5deg);}
+  .mock-topbar{
+    display:flex;align-items:center;gap:8px;
+    padding:14px 18px;
+    border-bottom:1px solid var(--border);
+    background:var(--surface-2);
+  }
+  .mock-topbar span{width:9px;height:9px;border-radius:50%;background:var(--border-strong);}
+  .mock-body{display:grid;grid-template-columns:150px 1fr;min-height:300px;}
+  .mock-side{border-right:1px solid var(--border);padding:18px 14px;display:flex;flex-direction:column;gap:6px;}
+  .mock-side-item{
+    font-size:12px;color:var(--gray-dim);padding:8px 10px;border-radius:7px;
+  }
+  .mock-side-item.active{background:var(--blue-dim);color:var(--blue-light);font-weight:600;}
+  .mock-main{padding:22px;display:flex;flex-direction:column;gap:12px;}
+  .mock-row{
+    display:flex;align-items:center;gap:12px;
+    padding:13px 14px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-size:13px;
+    color:var(--gray);
+  }
+  .mock-row .check{width:15px;height:15px;border-radius:5px;border:1.5px solid var(--border-strong);flex-shrink:0;}
+  .mock-row .check.done{background:var(--blue);border-color:var(--blue);}
+  .mock-row.ai{
+    border-color:rgba(10,102,255,0.35);
+    background:rgba(10,102,255,0.06);
+    color:var(--white);
+  }
+  .mock-row.ai .tag{
+    margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--blue-light);
+    letter-spacing:0.06em;text-transform:uppercase;
+  }
+
+  /* ---------- cómo funciona ---------- */
+  .steps{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:40px;
+  }
+  .steps::before{
+    content:"";
+    position:absolute;top:26px;left:calc(16.6% - 0px);right:calc(16.6% - 0px);
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border-strong) 15%, var(--border-strong) 85%, transparent);
+    z-index:0;
+  }
+  .step{position:relative;z-index:1;}
+  .step-num{
+    width:52px;height:52px;
+    border-radius:50%;
+    background:var(--surface);
+    border:1px solid var(--border-strong);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-size:15px;color:var(--blue-light);font-weight:500;
+    margin-bottom:26px;
+    transition:border-color .3s ease, box-shadow .3s ease;
+  }
+  .step:hover .step-num{border-color:var(--blue);box-shadow:0 0 20px rgba(10,102,255,0.3);}
+  .step h3{font-size:18px;font-weight:600;margin-bottom:10px;letter-spacing:-0.01em;}
+  .step p{font-size:14.5px;color:var(--gray);line-height:1.65;max-width:300px;}
+
+  /* ---------- CTA ---------- */
+  .cta-section{
+    padding:0 0 130px;
+  }
+  .cta-box{
+    position:relative;
+    border-radius:28px;
+    padding:90px 40px;
+    text-align:center;
+    background:radial-gradient(circle at 50% 0%, rgba(10,102,255,0.22), transparent 60%), var(--surface);
+    border:1px solid var(--border-strong);
+    overflow:hidden;
+  }
+  .cta-box::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size:26px 26px;
+    mask-image:radial-gradient(circle at 50% 30%, black, transparent 70%);
+    opacity:0.5;
+  }
+  .cta-box h2{
+    position:relative;z-index:1;
+    font-size:clamp(30px,4.2vw,48px);
+    font-weight:700;letter-spacing:-0.025em;line-height:1.12;
+  }
+  .cta-box p{position:relative;z-index:1;margin:18px auto 0;color:var(--gray);font-size:16.5px;max-width:440px;}
+  .cta-box .btn{position:relative;z-index:1;margin-top:36px;padding:16px 32px;font-size:15.5px;}
+
+  /* ---------- FAQ ---------- */
+  .faq-list{max-width:760px;margin:0 auto;border-top:1px solid var(--border);}
+  .faq-item{border-bottom:1px solid var(--border);}
+  .faq-q{
+    width:100%;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:26px 4px;
+    text-align:left;
+    font-size:16.5px;font-weight:600;letter-spacing:-0.01em;
+  }
+  .faq-q .plus{
+    width:22px;height:22px;flex-shrink:0;position:relative;margin-left:20px;
+  }
+  .faq-q .plus::before,.faq-q .plus::after{
+    content:"";position:absolute;background:var(--gray);
+    transition:transform .35s var(--ease), background .3s ease;
+  }
+  .faq-q .plus::before{top:50%;left:0;width:100%;height:1.5px;transform:translateY(-50%);}
+  .faq-q .plus::after{left:50%;top:0;height:100%;width:1.5px;transform:translateX(-50%);}
+  .faq-item.open .faq-q .plus::after{transform:translateX(-50%) rotate(90deg) scale(0);}
+  .faq-item.open .faq-q .plus::before,.faq-item.open .faq-q .plus::after{background:var(--blue-light);}
+  .faq-a{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .45s var(--ease);
+  }
+  .faq-a-inner{padding:0 4px 26px;color:var(--gray);font-size:15px;line-height:1.7;max-width:640px;}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--border);padding:70px 0 34px;}
+  .footer-top{
+    display:grid;
+    grid-template-columns:1.4fr repeat(3,1fr);
+    gap:50px;
+    padding-bottom:56px;
+  }
+  .footer-brand p{margin-top:16px;color:var(--gray-dim);font-size:14px;line-height:1.65;max-width:260px;}
+  .footer-col h5{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--gray-dim);margin-bottom:18px;
+  }
+  .footer-col ul{display:flex;flex-direction:column;gap:12px;}
+  .footer-col a{font-size:14px;color:var(--gray);transition:color .25s ease;}
+  .footer-col a:hover{color:var(--white);}
+  .footer-bottom{
+    border-top:1px solid var(--border);
+    padding-top:26px;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:16px;
+    font-size:13px;color:var(--gray-dim);
+    font-family:var(--font-mono);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .benefits-grid{grid-template-columns:repeat(2,1fr);}
+    .brand-section .wrap,.product-grid{grid-template-columns:1fr;gap:50px;}
+    .brand-visual{order:-1;max-width:380px;margin:0 auto;}
+    .mock-card{transform:none;}
+    .steps{grid-template-columns:1fr;gap:46px;}
+    .steps::before{display:none;}
+    .footer-top{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:760px){
+    nav.main-nav{
+      position:fixed;top:0;right:0;height:100vh;width:76%;max-width:320px;
+      background:rgba(11,15,25,0.98);
+      backdrop-filter:blur(20px);
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+      gap:28px;
+      padding:40px;
+      transform:translateX(100%);
+      transition:transform .45s var(--ease);
+      border-left:1px solid var(--border);
+    }
+    nav.main-nav.open{transform:translateX(0);}
+    nav.main-nav a{font-size:19px;}
+    .menu-toggle{display:flex;}
+    .header-actions .btn-ghost{display:none;}
+    .hero{padding:130px 0 80px;}
+    .hero-tags{gap:16px 22px;}
+    .section{padding:90px 0;}
+    .benefits-grid{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr;gap:36px;}
+    .cta-box{padding:64px 26px;}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 22px;}
+    .hero-ctas{flex-direction:column;width:100%;}
+    .hero-ctas .btn{width:100%;}
+  }
+
+  /* keyboard focus */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--blue-light);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header id="site-header">
+  <div class="wrap">
+    <a href="#top" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none">
+        <path d="M6 26V6H11.2L21.6 20.4V6H26V26H20.8L10.4 11.6V26H6Z" fill="#0A66FF"/>
+      </svg>
+      <span>N<span style="font-weight:500;opacity:0.92">exora</span></span>
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <a href="#producto">Producto</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#core">Nexora Core</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="#cta" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+      <a href="#cta" class="btn btn-primary btn-sm">Solicitar acceso</a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+  <canvas id="graph-canvas"></canvas>
+
+  <div class="wrap hero-inner">
+    <h1>Trabaja menos,<br>consigue más.</h1>
+    <p class="lead">Nexora construye sistemas digitales que organizan, automatizan y deciden por ti. El primer sistema ya está aquí: <strong style="color:#fff;font-weight:600">Nexora Core</strong>.</p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn btn-primary">Solicitar acceso</a>
+      <a href="#como-funciona" class="btn btn-ghost">Ver cómo funciona</a>
+    </div>
+    <div class="hero-tags">
+      <span>Tareas</span>
+      <span>Automatización</span>
+      <span>Datos</span>
+      <span>Decisiones</span>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span>Scroll</span><div class="line"></div></div>
+</section>
+
+<!-- ================= BENEFICIOS ================= -->
+<section class="section" id="beneficios">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">Por qué Nexora</div>
+      <h2>Cada sistema que construimos tiene un único objetivo.</h2>
+      <p>Devolverte el tiempo que hoy pierdes gestionando, buscando y decidiendo cosas pequeñas.</p>
+    </div>
+
+    <div class="benefits-grid" data-reveal>
+      <div class="benefit-card">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Ahorra tiempo real</h3>
+        <p>Automatiza lo repetitivo para que tu atención vaya solo a lo que de verdad importa.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5c0 2 1 3 2 4v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2c1-1 2-2 2-4a5 5 0 0 0-5-5Z"/><path d="M10 20h4"/></svg></div>
+        <h3>Piensa por ti</h3>
+        <p>La IA de Nexora entiende el contexto, prioriza y actúa. No se limita a responder.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></div>
+        <h3>Todo en un solo lugar</h3>
+        <p>Organiza tareas, información y decisiones sin saltar entre diez aplicaciones distintas.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+        <h3>Crece contigo</h3>
+        <p>Nexora Core es el primero de varios sistemas. Todos comparten la misma base.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUÉ ES NEXORA (MARCA) ================= -->
+<section class="section section-border-top brand-section" id="producto">
+  <div class="wrap">
+    <div class="brand-copy" data-reveal>
+      <div class="eyebrow">La marca</div>
+      <h2>Nexora no es una app. Es una infraestructura para tu tiempo.</h2>
+      <p>Construimos sistemas digitales, no herramientas sueltas. Cada producto que lanzamos comparte una misma idea: la tecnología debe organizarse sola para que tú no tengas que hacerlo.</p>
+
+      <div class="brand-stack">
+        <div class="brand-stack-item"><span class="dot"></span> Nexora Core — sistema 01, disponible</div>
+        <div class="brand-stack-item future"><span class="dot"></span> Próximos sistemas Nexora — en desarrollo</div>
+      </div>
+    </div>
+
+    <div class="brand-visual" data-reveal>
+      <svg class="big-n" viewBox="0 0 200 200" fill="none">
+        <path d="M40 165V35H72L128 128V35H160V165H128L72 72V165H40Z" fill="#0A66FF" fill-opacity="0.9"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEXORA CORE (PRODUCTO) ================= -->
+<section class="section section-border-top product-section" id="core">
+  <div class="wrap">
+    <div class="product-grid">
+      <div class="product-copy" data-reveal>
+        <div class="eyebrow">Producto 01 — Disponible</div>
+        <h2>Nexora Core es el centro de mando de tu trabajo diario.</h2>
+        <p class="lead">Reúne tus tareas, tu información y tus automatizaciones en un mismo sistema. Tú decides qué hacer; Core se encarga de organizarlo, priorizarlo y moverlo hacia adelante.</p>
+
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="num">01</span>
+            <div><h4>Organización automática</h4><p>Tus tareas y notas se agrupan y priorizan solas, sin que tengas que ordenarlas tú.</p></div>
+          </div>
+          <div class="feature-item">
+            <span class="num">02</span>
+            <div><h4>Automatizaciones con IA</h4><p>Nexora Core detecta lo repetitivo y lo ejecuta por ti en segundo plano.</p></div>
+          </div>
+          <div class="feature-item">
+            <span class="num">03</span>
+            <div><h4>Una sola vista para todo</h4><p>Deja de saltar entre apps. Todo tu trabajo vive en un mismo lugar.</p></div>
+          </div>
+        </div>
+
+        <a href="#cta" class="btn btn-primary">Probar Nexora Core</a>
+      </div>
+
+      <div data-reveal>
+        <div class="mock-card">
+          <div class="mock-topbar"><span></span><span></span><span></span></div>
+          <div class="mock-body">
+            <div class="mock-side">
+              <div class="mock-side-item active">Hoy</div>
+              <div class="mock-side-item">Proyectos</div>
+              <div class="mock-side-item">Automatizaciones</div>
+              <div class="mock-side-item">Notas</div>
+              <div class="mock-side-item">Archivo</div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-row"><span class="check done"></span> Enviar propuesta a cliente</div>
+              <div class="mock-row"><span class="check done"></span> Revisar métricas semanales</div>
+              <div class="mock-row"><span class="check"></span> Preparar sesión con el equipo</div>
+              <div class="mock-row ai"><span class="check"></span> Agrupar 6 correos pendientes <span class="tag">Sugerido por IA</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CÓMO FUNCIONA ================= -->
+<section class="section section-border-top" id="como-funciona">
+  <div class="wrap">
+    <div class="section-head center" data-reveal>
+      <div class="eyebrow" style="justify-content:center">Cómo funciona</div>
+      <h2>De la idea a hecho, sin fricción.</h2>
+      <p class="center">Tres pasos. Ninguno requiere que aprendas a usar una herramienta nueva.</p>
+    </div>
+
+    <div class="steps" data-reveal>
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Conecta tu trabajo</h3>
+        <p>Añade tus tareas, notas y flujos habituales. Nexora aprende cómo trabajas desde el primer día.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Deja que el sistema organice</h3>
+        <p>La IA de Nexora prioriza, agrupa y automatiza lo repetitivo sin que tengas que pedirlo.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Actúa con foco</h3>
+        <p>Recibe justo lo que necesitas hacer, en el momento en que lo necesitas. Nada más.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta-section" id="cta">
+  <div class="wrap">
+    <div class="cta-box" data-reveal>
+      <h2>Menos gestión.<br>Más resultados.</h2>
+      <p>Solicita acceso a Nexora Core y empieza a trabajar de otra forma.</p>
+      <a href="#" class="btn btn-primary">Solicitar acceso</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section section-border-top" id="faq">
+  <div class="wrap">
+    <div class="section-head center" data-reveal>
+      <div class="eyebrow" style="justify-content:center">Preguntas frecuentes</div>
+      <h2>Todo lo que necesitas saber.</h2>
+    </div>
+
+    <div class="faq-list" data-reveal>
+      <div class="faq-item">
+        <button class="faq-q">¿Qué es exactamente Nexora Core?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Es el primer sistema de Nexora: organiza tus tareas, tu información y tus automatizaciones en un mismo lugar, y usa IA para priorizar y ejecutar lo repetitivo por ti.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Necesito saber de IA para usarlo?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">No. Nexora Core está pensado para usarse sin configuración técnica. Tú sigues trabajando como siempre; el sistema se adapta a ti, no al revés.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Nexora reemplaza mis otras herramientas?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Nexora Core centraliza tu trabajo diario para que dependas de menos aplicaciones sueltas, pero se integra con las herramientas que ya usas en lugar de obligarte a abandonarlas de golpe.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Cuándo lanzaréis más productos Nexora?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Nexora Core es el primero de varios sistemas construidos sobre la misma base. Los siguientes productos se anunciarán a quienes ya tengan acceso a Nexora.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Mis datos están seguros?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Sí. Tu información se mantiene cifrada y bajo tu control en todo momento; Nexora no comparte tus datos con terceros.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Cómo solicito el acceso?<span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Pulsa en "Solicitar acceso" en cualquier punto de la página. Te avisaremos en cuanto tu cuenta esté lista para entrar en Nexora Core.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="logo">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none">
+            <path d="M6 26V6H11.2L21.6 20.4V6H26V26H20.8L10.4 11.6V26H6Z" fill="#0A66FF"/>
+          </svg>
+          <span>N<span style="font-weight:500;opacity:0.92">exora</span></span>
+        </a>
+        <p>Sistemas digitales que trabajan por ti. Trabaja menos, consigue más.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Producto</h5>
+        <ul>
+          <li><a href="#core">Nexora Core</a></li>
+          <li><a href="#como-funciona">Cómo funciona</a></li>
+          <li><a href="#faq">Preguntas frecuentes</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Empresa</h5>
+        <ul>
+          <li><a href="#producto">Sobre Nexora</a></li>
+          <li><a href="#cta">Solicitar acceso</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacidad</a></li>
+          <li><a href="#">Términos</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Nexora. Todos los derechos reservados.</span>
+      <span>Hecho para quienes quieren tiempo de vuelta.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---------- header scroll state ----------
+  const header = document.getElementById('site-header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 20);
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // ---------- mobile menu ----------
+  const menuToggle = document.getElementById('menu-toggle');
+  const mainNav = document.getElementById('main-nav');
+  menuToggle.addEventListener('click', () => {
+    const open = mainNav.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open);
+  });
+  mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mainNav.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // ---------- scroll reveal ----------
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if(entry.isIntersecting){
+        setTimeout(() => entry.target.classList.add('in'), i * 60);
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -60px 0px'});
+  revealEls.forEach(el => io.observe(el));
+
+  // ---------- FAQ accordion ----------
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(other => {
+        if(other !== item){
+          other.classList.remove('open');
+          other.querySelector('.faq-a').style.maxHeight = null;
+        }
+      });
+      item.classList.toggle('open', !isOpen);
+      a.style.maxHeight = !isOpen ? a.scrollHeight + 'px' : null;
+    });
+  });
+
+  // ---------- node graph in hero ----------
+  const canvas = document.getElementById('graph-canvas');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, nodes = [];
+  const NODE_COUNT = 34;
+
+  function resize(){
+    const hero = document.querySelector('.hero');
+    W = canvas.width = hero.offsetWidth;
+    H = canvas.height = hero.offsetHeight;
+  }
+
+  function initNodes(){
+    nodes = [];
+    for(let i=0;i<NODE_COUNT;i++){
+      nodes.push({
+        x: Math.random()*W,
+        y: Math.random()*H*0.9 + H*0.05,
+        vx: (Math.random()-0.5)*0.18,
+        vy: (Math.random()-0.5)*0.18,
+        r: Math.random()*1.6 + 1
+      });
+    }
+  }
+
+  let mouse = {x:null,y:null};
+  window.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    if(e.clientY - rect.top < H && e.clientY > rect.top){
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    } else {
+      mouse.x = null; mouse.y = null;
+    }
+  });
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const maxDist = Math.min(160, W*0.14);
+
+    for(let i=0;i<nodes.length;i++){
+      const n = nodes[i];
+      if(!reduceMotion){
+        n.x += n.vx; n.y += n.vy;
+        if(n.x < 0 || n.x > W) n.vx *= -1;
+        if(n.y < 0 || n.y > H) n.vy *= -1;
+      }
+    }
+
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a = nodes[i], b = nodes[j];
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < maxDist){
+          const op = (1 - dist/maxDist) * 0.35;
+          ctx.strokeStyle = `rgba(91,144,255,${op})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y);
+          ctx.lineTo(b.x,b.y);
+          ctx.stroke();
+        }
+      }
+      if(mouse.x !== null){
+        const dx = nodes[i].x-mouse.x, dy = nodes[i].y-mouse.y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < 200){
+          const op = (1 - dist/200) * 0.5;
+          ctx.strokeStyle = `rgba(10,102,255,${op})`;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x,nodes[i].y);
+          ctx.lineTo(mouse.x,mouse.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    for(const n of nodes){
+      ctx.fillStyle = 'rgba(139,149,167,0.55)';
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); initNodes(); });
+  resize();
+  initNodes();
+  draw();
+</script>
+
+</body>
+</html>
